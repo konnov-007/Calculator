@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ilya on 11/11/2017.
@@ -22,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SOLUTION = "solution";
 
 
-    public DBHelper(Context context) {
+    DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
@@ -38,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void insertData(String solution){
+    void insertData(String solution){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_SOLUTION, solution);
@@ -46,7 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList dbToList(){
+    ArrayList dbToList(){
         ArrayList<String> list = new ArrayList<String>();
         String dbString;
         SQLiteDatabase db = getWritableDatabase();
@@ -70,7 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public void deleteDB(){
+    void deleteDB(){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
