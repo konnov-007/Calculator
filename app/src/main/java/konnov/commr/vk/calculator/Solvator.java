@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 class Solvator {
     private TextView outputTextView;
@@ -11,11 +12,11 @@ class Solvator {
     private enum Signs {PLUS, MINUS, MULTIPLY, DIVIDE}
     private int i = 0;
     private String eachNumberString = "";
-    private boolean previousQueryCalculated = false;
     private HistoryFragment historyFragment;
     private DBHelper dbHelper;
     private Activity mainActivity;
     private int calculatorState = 0; // 0 - number clicked, 1 - operation clicked, 2 - query was calculated
+    Toast toast;
 
     Solvator(Activity activity, HistoryFragment historyFragment, DBHelper dbHelper){
         this.historyFragment = historyFragment;
@@ -28,6 +29,8 @@ class Solvator {
         try {
             switch (v.getId()) {
                 case R.id.button_one:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("1")) {
                         inputString = inputString + "1";
                         eachNumberString = eachNumberString + "1";
@@ -36,6 +39,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_two:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("2")) {
                         inputString = inputString + "2";
                         eachNumberString = eachNumberString + "2";
@@ -44,6 +49,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_three:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("3")) {
                         inputString = inputString + "3";
                         eachNumberString = eachNumberString + "3";
@@ -52,6 +59,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_four:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("4")) {
                         inputString = inputString + "4";
                         eachNumberString = eachNumberString + "4";
@@ -60,6 +69,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_five:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("5")) {
                         inputString = inputString + "5";
                         eachNumberString = eachNumberString + "5";
@@ -68,6 +79,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_six:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("6")) {
                         inputString = inputString + "6";
                         eachNumberString = eachNumberString + "6";
@@ -76,6 +89,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_seven:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("7")) {
                         inputString = inputString + "7";
                         eachNumberString = eachNumberString + "7";
@@ -84,6 +99,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_eight:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("8")) {
                         inputString = inputString + "8";
                         eachNumberString = eachNumberString + "8";
@@ -92,6 +109,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_nine:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("9")) {
                         inputString = inputString + "9";
                         eachNumberString = eachNumberString + "9";
@@ -100,6 +119,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_zero:
+                    if(isNumberTooLarge())
+                        return;
                     if(isFirstCharValid("0")) {
                         inputString = inputString + "0";
                         eachNumberString = eachNumberString + "0";
@@ -108,6 +129,8 @@ class Solvator {
                     outputString();
                     break;
                 case R.id.button_dot:
+                    if(isNumberTooLarge())
+                        return;
                     if (!eachNumberString.contains(".") && !eachNumberString.isEmpty() && calculatorState == 0) {
                         inputString = inputString + ".";
                         eachNumberString = eachNumberString + ".";
@@ -306,6 +329,7 @@ class Solvator {
         eachNumberString = "";
         outputTextView.setText("");
         i = 0;
+        calculatorState = 0;
     }
 
 
@@ -385,22 +409,24 @@ class Solvator {
 
 
     private void buttonBackClicked(){
-        if(inputString.length() == 1) {
+        if(inputString.length() == 1 || (inputString.length() == 2 && inputString.charAt(0) =='-')) {
             clearAll();
             outputString();
             return;
         }
-        if(inputString != null && inputString.length()>0) {
-            if (inputString.indexOf("*") == inputString.length() - 2 || inputString.indexOf("/") == inputString.length() - 2 || inputString.indexOf("-") == inputString.length() - 2 || inputString.indexOf("+") == inputString.length() - 2) {
+        if(inputString.length()>0) {
+            if (inputString.charAt(inputString.length()-1) == ' '){
                 inputString = inputString.substring(0, inputString.length() - 3); //removing three last characters in the inputString in case the back button was clicked on " + " or " - " or " * " or " / "
                 eachNumberString = getTheLastNumberInString(inputString);
+                i--;
+                calculatorState = 0;
             }
             else{
                 inputString = inputString.substring(0, inputString.length() - 1); //removing one digit of a number
                 eachNumberString = getTheLastNumberInString(inputString);
-                if (inputString.indexOf("*") == inputString.length() - 1 || inputString.indexOf("/") == inputString.length() - 1 || inputString.indexOf("-") == inputString.length() - 1 || inputString.indexOf("+") == inputString.length() - 1) {
-                    inputString = inputString + " "; //give it some space if the last deleted number was just before the sign
+                if(inputString.charAt(inputString.length()-1) == ' '){
                     eachNumberString = "";
+                    calculatorState = 1;
                 }
             }
         }
@@ -410,6 +436,18 @@ class Solvator {
     private String getTheLastNumberInString(String str){
         String number[] = str.split(" ");
         return number[number.length-1];
+    }
+
+
+    private boolean isNumberTooLarge(){
+        if(eachNumberString.length()>=18){
+            if(toast != null)
+                toast.cancel();
+            toast = Toast.makeText(mainActivity, R.string.number_too_large_warning, Toast.LENGTH_SHORT);
+            toast.show();
+            return true;
+        }
+        return false;
     }
 
 }
