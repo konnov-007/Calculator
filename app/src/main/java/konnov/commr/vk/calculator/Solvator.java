@@ -9,14 +9,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import javax.xml.datatype.Duration;
+import java.util.Arrays;
 
 public class Solvator {
-    //final String TAG = "myLogs";
-    private byte number_of_possible_elements;
+    final String TAG = "myLogs";
+    private byte number_of_possible_elements = 40;
     private TextView output;
     private String string = "";
-    private enum Signs {NONE, PLUS, MINUS, MULTIPLY, DEVIDE}
+    private enum Signs {NONE, PLUS, MINUS, MULTIPLY, DIVIDE}
     private Signs[] sign;
     private double[] number;
     private int i = 0;
@@ -27,13 +27,12 @@ public class Solvator {
     private DBHelper dbHelper;
     private Activity mainActivity;
 
-    Solvator(Activity activity, TextView output, byte number_of_possible_elements, HistoryFragment historyFragment, DBHelper dbHelper){
-        this.number_of_possible_elements = number_of_possible_elements;
-        this.output = output;
+    Solvator(Activity activity, HistoryFragment historyFragment, DBHelper dbHelper){
         this.historyFragment = historyFragment;
         this.dbHelper = dbHelper;
         sign = new Signs[number_of_possible_elements];
         mainActivity = activity;
+        output = (TextView) activity.findViewById(R.id.output);
         number = new double[number_of_possible_elements];
     }
 
@@ -160,7 +159,7 @@ public class Solvator {
                     if(previousQueryCalculated)
                         previousQueryCalculated = false;
                     number[i] = Double.parseDouble(temporalString);
-                    sign[i] = Signs.DEVIDE;
+                    sign[i] = Signs.DIVIDE;
                     string = string + " / ";
                     i++;
                     temporalString = "";
@@ -195,26 +194,47 @@ public class Solvator {
             e.printStackTrace();
         }
     }
+    
 
 
     private void solve() {
         historyString = string;
         boolean startAgain = false;
-/* TODO back button
-        //separating the string to separated elements
-        String[] stringForEachElement = new String[number_of_possible_elements];
-        char[] theStringInCharacters = string.toCharArray();
-        int indexForStringOfEachElement = 0;
-        for (int index = 0; index < string.length(); index++) {
-            while(theStringInCharacters[index] != ' ') {
-                Log.v(TAG, String.valueOf(theStringInCharacters[index]));
-                stringForEachElement[indexForStringOfEachElement] += theStringInCharacters[index];
-                index++;
+        /*
+        Signs[] sign;
+        double[] number;
+
+        String[] stringForEachElement = string.split(" ");
+        sign = new Signs[stringForEachElement.length/2];
+        number = new double[stringForEachElement.length/2+1];
+        int signIndex = 0;
+        int numberIndex = 0;
+        for(int i = 0; i < stringForEachElement.length; i++){
+            switch (stringForEachElement[i]) {
+                case "+":
+                    sign[signIndex] = Signs.PLUS;
+                    signIndex++;
+                    break;
+                case "-":
+                    sign[signIndex] = Signs.MINUS;
+                    signIndex++;
+                    break;
+                case "*":
+                    sign[signIndex] = Signs.MULTIPLY;
+                    signIndex++;
+                    break;
+                case "/":
+                    sign[signIndex] = Signs.DIVIDE;
+                    signIndex++;
+                    break;
+                default:
+                    number[numberIndex] = Double.parseDouble(stringForEachElement[i]);
+                    numberIndex++;
+                    break;
             }
-            if(theStringInCharacters[index] + 1 != ' ')
-                indexForStringOfEachElement++;
         }
 */
+
 
 
 
@@ -223,7 +243,7 @@ public class Solvator {
                 i = 0;
                 startAgain = false;
             }
-            if(sign[i] == Signs.DEVIDE) {
+            if(sign[i] == Signs.DIVIDE) {
                 number[i] = number[i] / number[i+1];
                 for(int j = i; j<this.i; j++) {
                     if(j+2 <= this.i) {
@@ -388,21 +408,21 @@ public class Solvator {
 
 
     private void buttonBackClicked(){
-                if(string != null && string.length()>0) {
-                    if (string.indexOf("*") == string.length() - 2 || string.indexOf("/") == string.length() - 2 || string.indexOf("-") == string.length() - 2 || string.indexOf("+") == string.length() - 2)
-                        string = string.substring(0, string.length() - 3);
-                    else{
-                        if(string.length() == 1)
-                            string = "";
-                        else
-                            string = string.substring(0, string.length() - 1);
-                        if (string.indexOf("*") == string.length() - 1 || string.indexOf("/") == string.length() - 1 || string.indexOf("-") == string.length() - 1 || string.indexOf("+") == string.length() - 1)
-                            string = string + " ";
-                    }
-                }
-            Toast.makeText(mainActivity, String.valueOf(string.length()), Toast.LENGTH_SHORT).show();
-            outputInput();
+        if(string != null && string.length()>0) {
+            if (string.indexOf("*") == string.length() - 2 || string.indexOf("/") == string.length() - 2 || string.indexOf("-") == string.length() - 2 || string.indexOf("+") == string.length() - 2)
+                string = string.substring(0, string.length() - 3);
+            else{
+                if(string.length() == 1)
+                    string = "";
+                else
+                    string = string.substring(0, string.length() - 1);
+                if (string.indexOf("*") == string.length() - 1 || string.indexOf("/") == string.length() - 1 || string.indexOf("-") == string.length() - 1 || string.indexOf("+") == string.length() - 1)
+                    string = string + " ";
+            }
         }
+        outputInput();
+    }
 
 }
+
 
