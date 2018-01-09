@@ -1,18 +1,11 @@
 package konnov.commr.vk.calculator;
 
-
 import android.app.Activity;
-
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.Arrays;
 
 public class Solvator {
-    final String TAG = "myLogs";
     private byte number_of_possible_elements = 40;
     private TextView output;
     private String string = "";
@@ -194,19 +187,19 @@ public class Solvator {
             e.printStackTrace();
         }
     }
-    
+
 
 
     private void solve() {
         historyString = string;
         boolean startAgain = false;
-        /*
+
         Signs[] sign;
         double[] number;
 
         String[] stringForEachElement = string.split(" ");
-        sign = new Signs[stringForEachElement.length/2];
-        number = new double[stringForEachElement.length/2+1];
+        sign = new Signs[stringForEachElement.length];
+        number = new double[stringForEachElement.length];
         int signIndex = 0;
         int numberIndex = 0;
         for(int i = 0; i < stringForEachElement.length; i++){
@@ -233,7 +226,7 @@ public class Solvator {
                     break;
             }
         }
-*/
+
 
 
 

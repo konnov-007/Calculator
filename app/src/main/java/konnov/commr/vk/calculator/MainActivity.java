@@ -13,8 +13,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button buttonBack = (Button) findViewById(R.id.button_back);
-        buttonBack.setEnabled(false); // TODO back button
         //passing the activity, output text id, number of possible elements, the fragment and a dbhelper class
         solvator = new Solvator(this,
                 (HistoryFragment) getSupportFragmentManager().findFragmentById(R.id.fragment), new DBHelper(this));
