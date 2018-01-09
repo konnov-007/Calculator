@@ -159,7 +159,8 @@ class Solvator {
                     clearAll();
                     break;
                 case R.id.button_equals:
-                    solve();
+                    if(calculatorState == 0)
+                        solve();
                     break;
                 case R.id.button_back:
                     buttonBackClicked();
