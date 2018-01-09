@@ -30,88 +30,73 @@ public class Solvator {
     }
 
     public void button_clicked(View v){
-        if(previousQueryCalculated){
-            double tempAnswer;
-            tempAnswer = number[0];
-            clearAll();
-            number[0] = tempAnswer;
-            if(number[0]%1 == 0) {
-                string = String.format("%.0f", number[0]);
-                temporalString = String.format("%.0f", number[0]);
-            }
-            else {
-                string = String.valueOf(number[0]);
-                temporalString = String.valueOf(number[0]);
-            }
-        }
-
         try {
             switch (v.getId()) {
                 case R.id.button_one:
-                    if(housekeepingForButtons("1") == 0) {
+                    if(isFirstCharValid("1")) {
                         string = string + "1";
                         temporalString = temporalString + "1";
                     }
                     outputInput();
                     break;
                 case R.id.button_two:
-                    if(housekeepingForButtons("2") == 0) {
+                    if(isFirstCharValid("2")) {
                         string = string + "2";
                         temporalString = temporalString + "2";
                     }
                     outputInput();
                     break;
                 case R.id.button_three:
-                    if(housekeepingForButtons("3") == 0) {
+                    if(isFirstCharValid("3")) {
                         string = string + "3";
                         temporalString = temporalString + "3";
                     }
                     outputInput();
                     break;
                 case R.id.button_four:
-                    if(housekeepingForButtons("4") == 0) {
+                    if(isFirstCharValid("4")) {
                         string = string + "4";
                         temporalString = temporalString + "4";
                     }
                     outputInput();
                     break;
                 case R.id.button_five:
-                    if(housekeepingForButtons("5") == 0) {
+                    if(isFirstCharValid("5")) {
                         string = string + "5";
                         temporalString = temporalString + "5";
                     }
                     outputInput();
                     break;
                 case R.id.button_six:
-                    if(housekeepingForButtons("6") == 0) {
+                    if(isFirstCharValid("6")) {
                         string = string + "6";
                         temporalString = temporalString + "6";
                     }
                     outputInput();
                     break;
                 case R.id.button_seven:
-                    if(housekeepingForButtons("7") == 0) {
+                    if(isFirstCharValid("7")) {
                         string = string + "7";
                         temporalString = temporalString + "7";
                     }
                     outputInput();
                     break;
                 case R.id.button_eight:
-                    if(housekeepingForButtons("8") == 0) {
+                    if(isFirstCharValid("8")) {
                         string = string + "8";
                         temporalString = temporalString + "8";
                     }
                     outputInput();
                     break;
                 case R.id.button_nine:
-                    if(housekeepingForButtons("9") == 0) {
+                    if(isFirstCharValid("9")) {
                         string = string + "9";
                         temporalString = temporalString + "9";
                     }
                     outputInput();
                     break;
                 case R.id.button_zero:
-                    if(housekeepingForButtons("0") == 0) {
+                    if(isFirstCharValid("0")) {
                         string = string + "0";
                         temporalString = temporalString + "0";
                     }
@@ -293,10 +278,12 @@ public class Solvator {
         if(number[0]%1 == 0) {
             output.setText(String.format("%.0f", number[0]));
             historyString = historyString + " = " + String.valueOf(String.format("%.0f", number[0]));
+            string = String.format("%.0f", number[0]);
         }
         else {
             output.setText(String.valueOf(number[0]));
             historyString = historyString + " = " + String.valueOf(number[0]);
+            string = String.valueOf(number[0]);
         }
         previousQueryCalculated = true;
         dbHelper.insertData(historyString);
@@ -382,19 +369,19 @@ public class Solvator {
 
 
 
-    private int housekeepingForButtons(String characterForZeroFirstCharacterCondition){
-        if(previousQueryCalculated){
+    private boolean isFirstCharValid(String characterForZeroFirstCharacterCondition){ // method that makes sure that the first digit in the number isn't 0 and if it is we replace zero with the number we pass in the method argument
+        if(previousQueryCalculated){ //check if query was already calculated so we can clear it
             previousQueryCalculated = false;
-            clearAll();
+            clearAll(); //clear all if the user clicked any number after he got the answer
         }
 
-        if(temporalString.length() == 1 && temporalString.charAt(0) == '0'){
+        if(temporalString.length() == 1 && temporalString.charAt(0) == '0'){ // check if we input zero as the first character
             temporalString = characterForZeroFirstCharacterCondition;
-            string = string.substring(0, string.length()-1) + characterForZeroFirstCharacterCondition;
-            return 1;
+            string = string.substring(0, string.length()-1) + characterForZeroFirstCharacterCondition; //replace zero with the character we pass
+            return false;
         }
         else
-            return 0;
+            return true;
     }
 
 
@@ -403,14 +390,14 @@ public class Solvator {
     private void buttonBackClicked(){
         if(string != null && string.length()>0) {
             if (string.indexOf("*") == string.length() - 2 || string.indexOf("/") == string.length() - 2 || string.indexOf("-") == string.length() - 2 || string.indexOf("+") == string.length() - 2)
-                string = string.substring(0, string.length() - 3);
+                string = string.substring(0, string.length() - 3); //removing three last characters in the string in case the back button was clicked on " + " or " - " or " * " or " / "
             else{
                 if(string.length() == 1)
-                    string = "";
+                    string = ""; //assigning the string to empty if it contained only one character prior to clicking the back button
                 else
-                    string = string.substring(0, string.length() - 1);
+                    string = string.substring(0, string.length() - 1); //removing one digit of a number
                 if (string.indexOf("*") == string.length() - 1 || string.indexOf("/") == string.length() - 1 || string.indexOf("-") == string.length() - 1 || string.indexOf("+") == string.length() - 1)
-                    string = string + " ";
+                    string = string + " "; //give it some space if the last deleted number was just before the sign
             }
         }
         outputInput();
