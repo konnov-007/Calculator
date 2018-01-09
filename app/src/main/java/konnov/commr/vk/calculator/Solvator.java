@@ -1,187 +1,166 @@
 package konnov.commr.vk.calculator;
 
-
 import android.app.Activity;
-
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import javax.xml.datatype.Duration;
-
-public class Solvator {
-    //final String TAG = "myLogs";
-    private byte number_of_possible_elements;
-    private TextView output;
-    private String string = "";
-    private enum Signs {NONE, PLUS, MINUS, MULTIPLY, DEVIDE}
-    private Signs[] sign;
-    private double[] number;
+class Solvator {
+    private TextView outputTextView;
+    private String inputString = "";
+    private enum Signs {PLUS, MINUS, MULTIPLY, DIVIDE}
     private int i = 0;
-    private String temporalString = "";
+    private String eachNumberString = "";
     private boolean previousQueryCalculated = false;
     private HistoryFragment historyFragment;
-    private String historyString;
     private DBHelper dbHelper;
     private Activity mainActivity;
+    private int calculatorState = 0; // 0 - number clicked, 1 - operation clicked, 2 - query was calculated
 
-    Solvator(Activity activity, TextView output, byte number_of_possible_elements, HistoryFragment historyFragment, DBHelper dbHelper){
-        this.number_of_possible_elements = number_of_possible_elements;
-        this.output = output;
+    Solvator(Activity activity, HistoryFragment historyFragment, DBHelper dbHelper){
         this.historyFragment = historyFragment;
         this.dbHelper = dbHelper;
-        sign = new Signs[number_of_possible_elements];
         mainActivity = activity;
-        number = new double[number_of_possible_elements];
+        outputTextView = (TextView) activity.findViewById(R.id.output);
     }
 
-    public void button_clicked(View v){
-        if(previousQueryCalculated){
-            double tempAnswer;
-            tempAnswer = number[0];
-            clearAll();
-            number[0] = tempAnswer;
-            if(number[0]%1 == 0) {
-                string = String.format("%.0f", number[0]);
-                temporalString = String.format("%.0f", number[0]);
-            }
-            else {
-                string = String.valueOf(number[0]);
-                temporalString = String.valueOf(number[0]);
-            }
-        }
-
+    void button_clicked(View v){
         try {
             switch (v.getId()) {
                 case R.id.button_one:
-                    if(housekeepingForButtons("1") == 0) {
-                        string = string + "1";
-                        temporalString = temporalString + "1";
+                    if(isFirstCharValid("1")) {
+                        inputString = inputString + "1";
+                        eachNumberString = eachNumberString + "1";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_two:
-                    if(housekeepingForButtons("2") == 0) {
-                        string = string + "2";
-                        temporalString = temporalString + "2";
+                    if(isFirstCharValid("2")) {
+                        inputString = inputString + "2";
+                        eachNumberString = eachNumberString + "2";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_three:
-                    if(housekeepingForButtons("3") == 0) {
-                        string = string + "3";
-                        temporalString = temporalString + "3";
+                    if(isFirstCharValid("3")) {
+                        inputString = inputString + "3";
+                        eachNumberString = eachNumberString + "3";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_four:
-                    if(housekeepingForButtons("4") == 0) {
-                        string = string + "4";
-                        temporalString = temporalString + "4";
+                    if(isFirstCharValid("4")) {
+                        inputString = inputString + "4";
+                        eachNumberString = eachNumberString + "4";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_five:
-                    if(housekeepingForButtons("5") == 0) {
-                        string = string + "5";
-                        temporalString = temporalString + "5";
+                    if(isFirstCharValid("5")) {
+                        inputString = inputString + "5";
+                        eachNumberString = eachNumberString + "5";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_six:
-                    if(housekeepingForButtons("6") == 0) {
-                        string = string + "6";
-                        temporalString = temporalString + "6";
+                    if(isFirstCharValid("6")) {
+                        inputString = inputString + "6";
+                        eachNumberString = eachNumberString + "6";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_seven:
-                    if(housekeepingForButtons("7") == 0) {
-                        string = string + "7";
-                        temporalString = temporalString + "7";
+                    if(isFirstCharValid("7")) {
+                        inputString = inputString + "7";
+                        eachNumberString = eachNumberString + "7";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_eight:
-                    if(housekeepingForButtons("8") == 0) {
-                        string = string + "8";
-                        temporalString = temporalString + "8";
+                    if(isFirstCharValid("8")) {
+                        inputString = inputString + "8";
+                        eachNumberString = eachNumberString + "8";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_nine:
-                    if(housekeepingForButtons("9") == 0) {
-                        string = string + "9";
-                        temporalString = temporalString + "9";
+                    if(isFirstCharValid("9")) {
+                        inputString = inputString + "9";
+                        eachNumberString = eachNumberString + "9";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_zero:
-                    if(housekeepingForButtons("0") == 0) {
-                        string = string + "0";
-                        temporalString = temporalString + "0";
+                    if(isFirstCharValid("0")) {
+                        inputString = inputString + "0";
+                        eachNumberString = eachNumberString + "0";
+                        calculatorState = 0;
                     }
-                    outputInput();
+                    outputString();
                     break;
                 case R.id.button_dot:
-                    if(previousQueryCalculated){
-                        previousQueryCalculated = false;
-                        clearAll();
-                    }
-                    if (!temporalString.contains(".") && !temporalString.isEmpty()) {
-                        string = string + ".";
-                        temporalString = temporalString + ".";
-                        outputInput();
+                    if (!eachNumberString.contains(".") && !eachNumberString.isEmpty() && calculatorState == 0) {
+                        inputString = inputString + ".";
+                        eachNumberString = eachNumberString + ".";
+                        outputString();
                     }
                     break;
                 case R.id.button_plus:
-                    if(previousQueryCalculated)
-                        previousQueryCalculated = false;
-                    number[i] = Double.parseDouble(temporalString);
-                    sign[i] = Signs.PLUS;
-                    string = string + " + ";
-                    i++;
-                    temporalString = "";
-                    outputInput();
+                    if(calculatorState == 0 || calculatorState == 2) {
+                        inputString = inputString + " + ";
+                        i++;
+                        eachNumberString = "";
+                        outputString();
+                        calculatorState = 1;
+                    }
                     break;
                 case R.id.button_minus:
-                    if(previousQueryCalculated)
-                        previousQueryCalculated = false;
-                    number[i] = Double.parseDouble(temporalString);
-                    sign[i] = Signs.MINUS;
-                    string = string + " - ";
-                    i++;
-                    temporalString = "";
-                    outputInput();
+                    if(inputString.isEmpty()){
+                        inputString = inputString + "-";
+                        outputString();
+                        calculatorState = 1;
+                    }
+                    if(calculatorState == 0 || calculatorState == 2) {
+                        inputString = inputString + " - ";
+                        i++;
+                        eachNumberString = "";
+                        outputString();
+                        calculatorState = 1;
+                    }
                     break;
                 case R.id.button_divide:
-                    if(previousQueryCalculated)
-                        previousQueryCalculated = false;
-                    number[i] = Double.parseDouble(temporalString);
-                    sign[i] = Signs.DEVIDE;
-                    string = string + " / ";
-                    i++;
-                    temporalString = "";
-                    outputInput();
+                    if(calculatorState == 0 || calculatorState == 2) {
+                        inputString = inputString + " / ";
+                        i++;
+                        eachNumberString = "";
+                        outputString();
+                        calculatorState = 1;
+                    }
                     break;
                 case R.id.button_multiply:
-                    if(previousQueryCalculated)
-                        previousQueryCalculated = false;
-                    number[i] = Double.parseDouble(temporalString);
-                    sign[i] = Signs.MULTIPLY;
-                    string = string + " * ";
-                    i++;
-                    temporalString = "";
-                    outputInput();
+                    if(calculatorState == 0 || calculatorState == 2) {
+                        inputString = inputString + " * ";
+                        i++;
+                        eachNumberString = "";
+                        outputString();
+                        calculatorState = 1;
+                    }
                     break;
                 case R.id.button_clear:
                     clearAll();
                     break;
                 case R.id.button_equals:
-                    number[i] = Double.parseDouble(temporalString);
-                    solve();
+                    if(calculatorState == 0)
+                        solve();
                     break;
                 case R.id.button_back:
                     buttonBackClicked();
@@ -197,24 +176,45 @@ public class Solvator {
     }
 
 
+
     private void solve() {
-        historyString = string;
+        String historyString = inputString;
         boolean startAgain = false;
-/* TODO back button
-        //separating the string to separated elements
-        String[] stringForEachElement = new String[number_of_possible_elements];
-        char[] theStringInCharacters = string.toCharArray();
-        int indexForStringOfEachElement = 0;
-        for (int index = 0; index < string.length(); index++) {
-            while(theStringInCharacters[index] != ' ') {
-                Log.v(TAG, String.valueOf(theStringInCharacters[index]));
-                stringForEachElement[indexForStringOfEachElement] += theStringInCharacters[index];
-                index++;
+
+        Signs[] sign;
+        double[] number;
+
+        String[] stringForEachElement = inputString.split(" ");
+        sign = new Signs[stringForEachElement.length];
+        number = new double[stringForEachElement.length];
+        int signIndex = 0;
+        int numberIndex = 0;
+        for (String element : stringForEachElement) {
+            switch (element) {
+                case "+":
+                    sign[signIndex] = Signs.PLUS;
+                    signIndex++;
+                    break;
+                case "-":
+                    sign[signIndex] = Signs.MINUS;
+                    signIndex++;
+                    break;
+                case "*":
+                    sign[signIndex] = Signs.MULTIPLY;
+                    signIndex++;
+                    break;
+                case "/":
+                    sign[signIndex] = Signs.DIVIDE;
+                    signIndex++;
+                    break;
+                default:
+                    number[numberIndex] = Double.parseDouble(element);
+                    numberIndex++;
+                    break;
             }
-            if(theStringInCharacters[index] + 1 != ' ')
-                indexForStringOfEachElement++;
         }
-*/
+
+
 
 
 
@@ -223,7 +223,7 @@ public class Solvator {
                 i = 0;
                 startAgain = false;
             }
-            if(sign[i] == Signs.DEVIDE) {
+            if(sign[i] == Signs.DIVIDE) {
                 number[i] = number[i] / number[i+1];
                 for(int j = i; j<this.i; j++) {
                     if(j+2 <= this.i) {
@@ -278,36 +278,33 @@ public class Solvator {
             }
         }
         if(number[0]%1 == 0) {
-            output.setText(String.format("%.0f", number[0]));
+            outputTextView.setText(String.format("%.0f", number[0]));
             historyString = historyString + " = " + String.valueOf(String.format("%.0f", number[0]));
+            inputString = String.format("%.0f", number[0]);
         }
         else {
-            output.setText(String.valueOf(number[0]));
+            outputTextView.setText(String.valueOf(number[0]));
             historyString = historyString + " = " + String.valueOf(number[0]);
+            inputString = String.valueOf(number[0]);
         }
-        previousQueryCalculated = true;
+        calculatorState = 2;
         dbHelper.insertData(historyString);
-        historyString = "";
     }
 
 
 
 
-    private void outputInput(){
-        output.setText(string);
+    private void outputString(){
+        outputTextView.setText(inputString);
 
     }
 
 
 
     private void clearAll(){
-        string = "";
-        temporalString = "";
-        output.setText("");
-        for(int i = 0; i < number_of_possible_elements; i++)
-            number[i] = 0;
-        for(int i = 0; i < number_of_possible_elements; i++)
-            sign[i] = Signs.NONE;
+        inputString = "";
+        eachNumberString = "";
+        outputTextView.setText("");
         i = 0;
     }
 
@@ -369,40 +366,52 @@ public class Solvator {
 
 
 
-    private int housekeepingForButtons(String characterForZeroFirstCharacterCondition){
-        if(previousQueryCalculated){
-            previousQueryCalculated = false;
-            clearAll();
+    private boolean isFirstCharValid(String characterForZeroFirstCharacterCondition){ // method that makes sure that the first digit in the number isn't 0 and if it is we replace zero with the number we pass in the method argument
+        if(calculatorState == 2){ //check if query was already calculated so we can clear it
+            clearAll(); //clear all if the user clicked any number after he got the answer
         }
 
-        if(temporalString.length() == 1 && temporalString.charAt(0) == '0'){
-            temporalString = characterForZeroFirstCharacterCondition;
-            string = string.substring(0, string.length()-1) + characterForZeroFirstCharacterCondition;
-            return 1;
+        if(eachNumberString.length() == 1 && eachNumberString.charAt(0) == '0'){ // check if we input zero as the first character
+            eachNumberString = characterForZeroFirstCharacterCondition;
+            inputString = inputString.substring(0, inputString.length()-1) + characterForZeroFirstCharacterCondition; //replace zero with the character we pass
+            calculatorState = 0;
+            return false;
         }
         else
-            return 0;
+            return true;
     }
 
 
 
 
     private void buttonBackClicked(){
-                if(string != null && string.length()>0) {
-                    if (string.indexOf("*") == string.length() - 2 || string.indexOf("/") == string.length() - 2 || string.indexOf("-") == string.length() - 2 || string.indexOf("+") == string.length() - 2)
-                        string = string.substring(0, string.length() - 3);
-                    else{
-                        if(string.length() == 1)
-                            string = "";
-                        else
-                            string = string.substring(0, string.length() - 1);
-                        if (string.indexOf("*") == string.length() - 1 || string.indexOf("/") == string.length() - 1 || string.indexOf("-") == string.length() - 1 || string.indexOf("+") == string.length() - 1)
-                            string = string + " ";
-                    }
-                }
-            Toast.makeText(mainActivity, String.valueOf(string.length()), Toast.LENGTH_SHORT).show();
-            outputInput();
+        if(inputString.length() == 1) {
+            clearAll();
+            outputString();
+            return;
         }
+        if(inputString != null && inputString.length()>0) {
+            if (inputString.indexOf("*") == inputString.length() - 2 || inputString.indexOf("/") == inputString.length() - 2 || inputString.indexOf("-") == inputString.length() - 2 || inputString.indexOf("+") == inputString.length() - 2) {
+                inputString = inputString.substring(0, inputString.length() - 3); //removing three last characters in the inputString in case the back button was clicked on " + " or " - " or " * " or " / "
+                eachNumberString = getTheLastNumberInString(inputString);
+            }
+            else{
+                inputString = inputString.substring(0, inputString.length() - 1); //removing one digit of a number
+                eachNumberString = getTheLastNumberInString(inputString);
+                if (inputString.indexOf("*") == inputString.length() - 1 || inputString.indexOf("/") == inputString.length() - 1 || inputString.indexOf("-") == inputString.length() - 1 || inputString.indexOf("+") == inputString.length() - 1) {
+                    inputString = inputString + " "; //give it some space if the last deleted number was just before the sign
+                    eachNumberString = "";
+                }
+            }
+        }
+        outputString();
+    }
+
+    private String getTheLastNumberInString(String str){
+        String number[] = str.split(" ");
+        return number[number.length-1];
+    }
 
 }
+
 
