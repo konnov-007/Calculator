@@ -20,10 +20,33 @@
     <string name="equals_symbol">=</string>
     <string name="history">⟳</string>
     <string name="back">←</string>
+
+    <string name="sinus">sin</string>
+    <string name="left_bracket">(</string>
+    <string name="right_bracket">)</string>
+    <string name="power">^</string>
     //fragment_history.xml//
     <string name="clear">clear</string>
     //Solvator.java//
-    <string name="number_too_large_warning">The number can\'t exceed 18 characters</string>
+    <string name="number_too_large_warning">The number can\'t exceed 18 digits</string>
+    //menu_main.xml
+    <string name="converter">Converter</string>
 
-
+    //activity_converter.xml//
+    <string-array name="converter_options">
+        <item name = "currency">Currency</item>
+        <item name = "weight">Weight</item>
+        <item name = "distance">Distance</item>
+        <item name = "volume">Volume</item>
+    </string-array>
+    <string-array name="currency_options">
+        <item name = "USD">USD</item>
+        <item name = "RUB">RUB</item>
+        <item name = "EUR">EUR</item>
+        <item name = "GBP">GBP</item>
+        <item name = "AUD">AUD</item>
+        <item name = "CAD">CAD</item>
+        <item name = "CNY">CNY</item>
+        <item name = "JPY">JPY</item>
+    </string-array>
 </resources>

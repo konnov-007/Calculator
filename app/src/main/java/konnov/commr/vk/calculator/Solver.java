@@ -6,19 +6,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-class Solvator {
+import java.util.ArrayList;
+
+class Solver {
     private TextView outputTextView;
     private String inputString = "";
     private enum Signs {PLUS, MINUS, MULTIPLY, DIVIDE}
-    private int i = 0;
     private String eachNumberString = "";
     private HistoryFragment historyFragment;
     private DBHelper dbHelper;
     private Activity mainActivity;
-    private int calculatorState = 0; // 0 - number clicked, 1 - operation clicked, 2 - query was calculated
-    Toast toast;
+    private int calculatorState = 1; // 0 - number clicked, 1 - operation clicked, 2 - query was calculated
+    private Toast toast;
 
-    Solvator(Activity activity, HistoryFragment historyFragment, DBHelper dbHelper){
+
+    Solver(Activity activity, HistoryFragment historyFragment, DBHelper dbHelper){
         this.historyFragment = historyFragment;
         this.dbHelper = dbHelper;
         mainActivity = activity;
@@ -29,7 +31,7 @@ class Solvator {
         try {
             switch (v.getId()) {
                 case R.id.button_one:
-                    if(isNumberTooLarge())
+                    if(isNumberTooLarge()) //check if the number didn't exceeded 18 digits
                         return;
                     if(isFirstCharValid("1")) {
                         inputString = inputString + "1";
@@ -140,7 +142,6 @@ class Solvator {
                 case R.id.button_plus:
                     if(calculatorState == 0 || calculatorState == 2) {
                         inputString = inputString + " + ";
-                        i++;
                         eachNumberString = "";
                         outputString();
                         calculatorState = 1;
@@ -154,7 +155,6 @@ class Solvator {
                     }
                     if(calculatorState == 0 || calculatorState == 2) {
                         inputString = inputString + " - ";
-                        i++;
                         eachNumberString = "";
                         outputString();
                         calculatorState = 1;
@@ -163,7 +163,6 @@ class Solvator {
                 case R.id.button_divide:
                     if(calculatorState == 0 || calculatorState == 2) {
                         inputString = inputString + " / ";
-                        i++;
                         eachNumberString = "";
                         outputString();
                         calculatorState = 1;
@@ -172,11 +171,18 @@ class Solvator {
                 case R.id.button_multiply:
                     if(calculatorState == 0 || calculatorState == 2) {
                         inputString = inputString + " * ";
-                        i++;
                         eachNumberString = "";
                         outputString();
                         calculatorState = 1;
                     }
+                    break;
+                case R.id.button_bracket_left:
+                    inputString = inputString + "(";
+                    outputString();
+                    break;
+                case R.id.button_bracket_right:
+                    inputString = inputString + ")";
+                    outputString();
                     break;
                 case R.id.button_clear:
                     clearAll();
@@ -201,6 +207,18 @@ class Solvator {
 
 
     private void solve() {
+        if(!inputString.contains("("))
+            SolveNoBracketsAlgorithm();
+        else
+            SolveAlgorithnWithBrackets();
+    }
+
+
+    private void SolveAlgorithnWithBrackets(){
+        // TODO algorithm with brackets
+    }
+
+    private void SolveNoBracketsAlgorithm(){
         String historyString = inputString;
         boolean startAgain = false;
 
@@ -237,66 +255,64 @@ class Solvator {
             }
         }
 
+        int numberOfOperations = stringForEachElement.length/2;
 
-
-
-
-        for(int i = 0; i <= this.i; i++){
+        for(int i = 0; i <= numberOfOperations; i++){
             if(startAgain) {
                 i = 0;
                 startAgain = false;
             }
             if(sign[i] == Signs.DIVIDE) {
                 number[i] = number[i] / number[i+1];
-                for(int j = i; j<this.i; j++) {
-                    if(j+2 <= this.i) {
+                for(int j = i; j<numberOfOperations; j++) {
+                    if(j+2 <= numberOfOperations) {
                         sign[j] = sign[j + 1];
                         number[j + 1] = number[j + 2];
                     }
                 }
-                this.i--;
+                numberOfOperations--;
                 startAgain = true;
             }
             else if (sign[i] == Signs.MULTIPLY) {
                 number[i] = number[i] * number[i+1];
-                for(int j = i; j<this.i; j++) {
-                    if(j+2 <= this.i) {
+                for(int j = i; j<numberOfOperations; j++) {
+                    if(j+2 <= numberOfOperations) {
                         sign[j] = sign[j + 1];
                         number[j + 1] = number[j + 2];
                     }
                 }
-                this.i--;
+                numberOfOperations--;
                 startAgain = true;
             }
         }
         startAgain = false;
 
-        for(int i = 0; i <= this.i; i++){
+        for(int i = 0; i <= numberOfOperations; i++){
             if(startAgain) {
                 i = 0;
                 startAgain = false;
             }
             if(sign[i] == Signs.MINUS) {
                 number[i] = number[i] - number[i+1];
-                for(int j = i; j<this.i; j++) {
-                    if(j+2 <= this.i) {
+                for(int j = i; j<numberOfOperations; j++) {
+                    if(j+2 <= numberOfOperations) {
                         sign[j] = sign[j + 1];
                         number[j + 1] = number[j + 2];
                     }
                 }
-                this.i--;
+                numberOfOperations--;
                 startAgain = true;
             }
             else if(sign[i] == Signs.PLUS) {
                 number[i] = number[i] + number[i+1];
 
-                for(int j = i; j<this.i; j++) {
-                    if(j+2 <= this.i) {
+                for(int j = i; j<numberOfOperations; j++) {
+                    if(j+2 <= numberOfOperations) {
                         sign[j] = sign[j + 1];
                         number[j + 1] = number[j + 2];
                     }
                 }
-                this.i--;
+                numberOfOperations--;
                 startAgain = true;
             }
         }
@@ -312,6 +328,7 @@ class Solvator {
         }
         calculatorState = 2;
         dbHelper.insertData(historyString);
+
     }
 
 
@@ -328,8 +345,7 @@ class Solvator {
         inputString = "";
         eachNumberString = "";
         outputTextView.setText("");
-        i = 0;
-        calculatorState = 0;
+        calculatorState = 1;
     }
 
 
@@ -418,7 +434,6 @@ class Solvator {
             if (inputString.charAt(inputString.length()-1) == ' '){
                 inputString = inputString.substring(0, inputString.length() - 3); //removing three last characters in the inputString in case the back button was clicked on " + " or " - " or " * " or " / "
                 eachNumberString = getTheLastNumberInString(inputString);
-                i--;
                 calculatorState = 0;
             }
             else{
@@ -448,6 +463,21 @@ class Solvator {
             return true;
         }
         return false;
+    }
+
+    public void setValuesAfterRotation(String eachNumberString, String inputString, int calculatorState){ //update the value after device was rotated
+        this.eachNumberString = eachNumberString;
+        this.inputString = inputString;
+        this.calculatorState = calculatorState;
+        outputTextView.setText(inputString);
+    }
+
+    public ArrayList<Object> getValuesBeforeRotation(){
+        ArrayList<Object> listOfValues = new ArrayList<>();
+        listOfValues.add(eachNumberString);
+        listOfValues.add(inputString);
+        listOfValues.add(calculatorState);
+        return listOfValues;
     }
 
 }
