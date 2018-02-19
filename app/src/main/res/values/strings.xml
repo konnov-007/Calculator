@@ -21,10 +21,21 @@
     <string name="history">⟳</string>
     <string name="back">←</string>
 
-    <string name="sinus">sin</string>
+    <string name="sin">sin</string>
+    <string name="cos">cos</string>
+    <string name="tan">tan</string>
+    <string name="ctan">ctan</string>
+    <string name="arcsin">arcsin</string>
+    <string name="arccos">arccos</string>
+    <string name="arctan">arctan</string>
+    <string name="arcctan">arcctan</string>
+
+    <string name="ln">ln</string>
+    <string name="sqrt">√</string>
     <string name="left_bracket">(</string>
     <string name="right_bracket">)</string>
     <string name="power">^</string>
+    <string name="pi">π</string>
     //fragment_history.xml//
     <string name="clear">clear</string>
     //Solvator.java//
