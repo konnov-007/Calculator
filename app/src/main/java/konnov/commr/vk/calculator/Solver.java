@@ -148,7 +148,8 @@ class Solver {
                     }
                     break;
                 case R.id.button_plus:
-                    inputString = inputString.replaceAll("(\\.([^1-9])?)", ".0");
+                    if(inputString.endsWith("."))
+                        inputString = inputString + "0";
                     outputString();
                     if(calculatorState == 0 || calculatorState == 2) {
                         inputString = inputString + " + ";
@@ -158,7 +159,8 @@ class Solver {
                     }
                     break;
                 case R.id.button_minus:
-                    inputString = inputString.replaceAll("(\\.([^1-9])?)", ".0");
+                    if(inputString.endsWith("."))
+                        inputString = inputString + "0";
                     outputString();
                     if(inputString.isEmpty() || inputString.endsWith("(")){
                         inputString = inputString + "-";
@@ -173,7 +175,8 @@ class Solver {
                     }
                     break;
                 case R.id.button_divide:
-                    inputString = inputString.replaceAll("(\\.([^1-9])?)", ".0");
+                    if(inputString.endsWith("."))
+                        inputString = inputString + "0";
                     outputString();
                     if(calculatorState == 0 || calculatorState == 2) {
                         inputString = inputString + " / ";
@@ -183,7 +186,8 @@ class Solver {
                     }
                     break;
                 case R.id.button_multiply:
-                    inputString = inputString.replaceAll("(\\.([^1-9])?)", ".0");
+                    if(inputString.endsWith("."))
+                        inputString = inputString + "0";
                     outputString();
                     if(calculatorState == 0 || calculatorState == 2) {
                         inputString = inputString + " * ";
@@ -193,6 +197,9 @@ class Solver {
                     }
                     break;
                 case R.id.button_pi:
+                    if(inputString.endsWith("."))
+                        inputString = inputString + "0 * ";
+                    outputString();
                     if(calculatorState == 2)
                         inputString = "";
                     inputString = inputString + "3.14159265359";
@@ -307,15 +314,14 @@ class Solver {
 
 
     private void solve() {
-//        inputString = inputString.replaceAll("(\\.([^1-9])?)", ".0");
-//        if(!inputString.contains("("))
+        inputString = inputString.replaceAll("\\.[^1-9]", ".0");//        if(!inputString.contains("("))
 //            SolveNoBracketsAlgorithm();
 //        else
           SolveAlgorithnWithBrackets();
     }
 
 
-    private void SolveAlgorithnWithBrackets() {
+    private void SolveAlgorithnWithBrackets() { //solving via math parser library
         //inputString = "(22 - 6) / (2 - 10 + 50) * (50 * sin(90) - (3^5 + sqrt(81)) - ln(16) + 9^9) + 8!";
         String historyString = inputString;
         Expression expression = new Expression(inputString);
@@ -335,7 +341,7 @@ class Solver {
     }
 
 
-    private void SolveNoBracketsAlgorithm(){
+    private void SolveNoBracketsAlgorithm(){ //my own calculating algorithm. It's no longer used
         String historyString = inputString;
         boolean startAgain = false;
 
