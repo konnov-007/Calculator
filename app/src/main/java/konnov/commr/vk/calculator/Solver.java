@@ -9,18 +9,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Objects;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 
 class Solver {
     private TextView outputTextView;
-    private String inputString = "";
+    private StringBuilder inputString = new StringBuilder();
     private enum Signs {PLUS, MINUS, MULTIPLY, DIVIDE}
-    private String eachNumberString = "";
+    private StringBuilder eachNumberString =  new StringBuilder();
     private HistoryFragment historyFragment;
     private DBHelper dbHelper;
     private Activity mainActivity;
@@ -41,9 +36,9 @@ class Solver {
                 case R.id.button_one:
                     if(isNumberTooLarge()) //check if the number didn't exceeded 18 digits
                         return;
-                    if(isFirstCharValid("1")) {
-                        inputString = inputString + "1";
-                        eachNumberString = eachNumberString + "1";
+                    if(isFirstCharValid('1')) {
+                        inputString.append("1");
+                        eachNumberString.append("1");
                         calculatorState = 0;
                     }
                     outputString();
@@ -51,9 +46,9 @@ class Solver {
                 case R.id.button_two:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("2")) {
-                        inputString = inputString + "2";
-                        eachNumberString = eachNumberString + "2";
+                    if(isFirstCharValid('2')) {
+                        inputString.append("2");
+                        eachNumberString.append("2");
                         calculatorState = 0;
                     }
                     outputString();
@@ -61,9 +56,9 @@ class Solver {
                 case R.id.button_three:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("3")) {
-                        inputString = inputString + "3";
-                        eachNumberString = eachNumberString + "3";
+                    if(isFirstCharValid('3')) {
+                        inputString.append("3");
+                        eachNumberString.append("3");
                         calculatorState = 0;
                     }
                     outputString();
@@ -71,9 +66,9 @@ class Solver {
                 case R.id.button_four:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("4")) {
-                        inputString = inputString + "4";
-                        eachNumberString = eachNumberString + "4";
+                    if(isFirstCharValid('4')) {
+                        inputString.append("4");
+                        eachNumberString.append("4");
                         calculatorState = 0;
                     }
                     outputString();
@@ -81,9 +76,9 @@ class Solver {
                 case R.id.button_five:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("5")) {
-                        inputString = inputString + "5";
-                        eachNumberString = eachNumberString + "5";
+                    if(isFirstCharValid('5')) {
+                        inputString.append("5");
+                        eachNumberString.append("5");
                         calculatorState = 0;
                     }
                     outputString();
@@ -91,9 +86,9 @@ class Solver {
                 case R.id.button_six:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("6")) {
-                        inputString = inputString + "6";
-                        eachNumberString = eachNumberString + "6";
+                    if(isFirstCharValid('6')) {
+                        inputString.append("6");
+                        eachNumberString.append("6");
                         calculatorState = 0;
                     }
                     outputString();
@@ -101,9 +96,9 @@ class Solver {
                 case R.id.button_seven:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("7")) {
-                        inputString = inputString + "7";
-                        eachNumberString = eachNumberString + "7";
+                    if(isFirstCharValid('7')) {
+                        inputString.append("7");
+                        eachNumberString.append("7");
                         calculatorState = 0;
                     }
                     outputString();
@@ -111,9 +106,9 @@ class Solver {
                 case R.id.button_eight:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("8")) {
-                        inputString = inputString + "8";
-                        eachNumberString = eachNumberString + "8";
+                    if(isFirstCharValid('8')) {
+                        inputString.append("8");
+                        eachNumberString.append("8");
                         calculatorState = 0;
                     }
                     outputString();
@@ -121,9 +116,9 @@ class Solver {
                 case R.id.button_nine:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("9")) {
-                        inputString = inputString + "9";
-                        eachNumberString = eachNumberString + "9";
+                    if(isFirstCharValid('9')) {
+                        inputString.append("9");
+                        eachNumberString.append("9");
                         calculatorState = 0;
                     }
                     outputString();
@@ -131,9 +126,9 @@ class Solver {
                 case R.id.button_zero:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid("0")) {
-                        inputString = inputString + "0";
-                        eachNumberString = eachNumberString + "0";
+                    if(isFirstCharValid('0')) {
+                        inputString.append("0");
+                        eachNumberString.append("0");
                         calculatorState = 0;
                     }
                     outputString();
@@ -141,153 +136,153 @@ class Solver {
                 case R.id.button_dot:
                     if(isNumberTooLarge())
                         return;
-                    if (!eachNumberString.contains(".") && !eachNumberString.isEmpty() && calculatorState == 0) {
-                        inputString = inputString + ".";
-                        eachNumberString = eachNumberString + ".";
+                    if (!eachNumberString.toString().contains(".") && !eachNumberString.toString().isEmpty() && calculatorState == 0) {
+                        inputString.append(".");
+                        eachNumberString.append(".");
                         outputString();
                     }
                     break;
                 case R.id.button_plus:
-                    if(inputString.endsWith("."))
-                        inputString = inputString + "0";
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0");
                     outputString();
                     if(calculatorState == 0 || calculatorState == 2) {
-                        inputString = inputString + " + ";
-                        eachNumberString = "";
+                        inputString.append(" + ");
+                        eachNumberString.setLength(0);
                         outputString();
                         calculatorState = 1;
                     }
                     break;
                 case R.id.button_minus:
-                    if(inputString.endsWith("."))
-                        inputString = inputString + "0";
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0");;
                     outputString();
-                    if(inputString.isEmpty() || inputString.endsWith("(")){
-                        inputString = inputString + "-";
+                    if(inputString.toString().isEmpty() || inputString.toString().endsWith("(")){
+                        inputString.append("-");
                         outputString();
                         calculatorState = 1;
                     }
                     if(calculatorState == 0 || calculatorState == 2) {
-                        inputString = inputString + " - ";
-                        eachNumberString = "";
+                        inputString.append(" - ");
+                        eachNumberString.setLength(0);
                         outputString();
                         calculatorState = 1;
                     }
                     break;
                 case R.id.button_divide:
-                    if(inputString.endsWith("."))
-                        inputString = inputString + "0";
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0");;
                     outputString();
                     if(calculatorState == 0 || calculatorState == 2) {
-                        inputString = inputString + " / ";
-                        eachNumberString = "";
+                        inputString.append(" / ");
+                        eachNumberString.setLength(0);
                         outputString();
                         calculatorState = 1;
                     }
                     break;
                 case R.id.button_multiply:
-                    if(inputString.endsWith("."))
-                        inputString = inputString + "0";
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0");
                     outputString();
                     if(calculatorState == 0 || calculatorState == 2) {
-                        inputString = inputString + " * ";
-                        eachNumberString = "";
+                        inputString.append(" * ");;
+                        eachNumberString.setLength(0);
                         outputString();
                         calculatorState = 1;
                     }
                     break;
                 case R.id.button_pi:
-                    if(inputString.endsWith("."))
-                        inputString = inputString + "0 * ";
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
                     outputString();
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "3.14159265359";
+                        eachNumberString.setLength(0);
+                    inputString.append("3.14159265359");
                     outputString();
                     calculatorState = 0;
                     break;
                 case R.id.button_ln:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "ln(";
+                        eachNumberString.setLength(0);
+                    inputString.append("ln(");
                     outputString();
                     break;
                 case R.id.button_pow:
                     if(calculatorState == 0){
-                        inputString = inputString + "^";
+                        inputString.append("^");
                         outputString();
                     }
                     break;
                 case R.id.button_sqrt:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "sqrt(";
+                        eachNumberString.setLength(0);
+                    inputString.append("sqrt(");
                     outputString();
                     break;
                 case R.id.button_factorial:
-                    inputString = inputString + "!";
+                    inputString.append("!");
                     outputString();
                     break;
                 case R.id.button_sin:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "sin(";
+                        eachNumberString.setLength(0);
+                    inputString.append("sin(");
                     outputString();
                     break;
                 case R.id.button_cos:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "cos(";
+                        eachNumberString.setLength(0);
+                    inputString.append("cos(");
                     outputString();
                     break;
                 case R.id.button_tan:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "tan(";
+                        eachNumberString.setLength(0);
+                    inputString.append("tan(");
                     outputString();
                     break;
                 case R.id.button_ctan:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "ctan(";
+                        eachNumberString.setLength(0);
+                    inputString.append("ctan(");
                     outputString();
                     break;
                 case R.id.button_arcsin:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "arcsin(";
+                        eachNumberString.setLength(0);
+                    inputString.append("arcsin(");
                     outputString();
                     break;
                 case R.id.button_arccos:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "arccos(";
+                        eachNumberString.setLength(0);
+                    inputString.append("arccos(");
                     outputString();
                     break;
                 case R.id.button_arctan:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "arctan(";
+                        eachNumberString.setLength(0);
+                    inputString.append("arctan(");
                     outputString();
                     break;
                 case R.id.button_arcctan:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + "arcctan(";
+                        eachNumberString.setLength(0);
+                    inputString.append("arcctan(");
                     outputString();
                     break;
                 case R.id.button_bracket_left:
                     if(calculatorState == 2)
-                        inputString = "";
+                        eachNumberString.setLength(0);
                     if(calculatorState == 0)
                         return;
-                    inputString = inputString + "(";
+                    inputString.append("(");
                     outputString();
                     break;
                 case R.id.button_bracket_right:
                     if(calculatorState == 2)
-                        inputString = "";
-                    inputString = inputString + ")";
+                        eachNumberString.setLength(0);
+                    inputString.append(")");
                     outputString();
                     calculatorState = 0;
                     break;
@@ -314,7 +309,7 @@ class Solver {
 
 
     private void solve() {
-        inputString = inputString.replaceAll("\\.[^1-9]", ".0");//        if(!inputString.contains("("))
+        inputString.replace(0, inputString.length(), inputString.toString().replaceAll("\\.[^1-9]", ".0"));// ensuring there isn't gonna be a number ending with dot with no number after it       if(!inputString.contains("("))
 //            SolveNoBracketsAlgorithm();
 //        else
           SolveAlgorithnWithBrackets();
@@ -323,32 +318,32 @@ class Solver {
 
     private void SolveAlgorithnWithBrackets() { //solving via math parser library
         //inputString = "(22 - 6) / (2 - 10 + 50) * (50 * sin(90) - (3^5 + sqrt(81)) - ln(16) + 9^9) + 8!";
-        String historyString = inputString;
-        Expression expression = new Expression(inputString);
+        StringBuilder historyString = new StringBuilder(inputString.toString());
+        Expression expression = new Expression(inputString.toString());
         double answer = expression.calculate();
         if(answer%1 == 0) {
             outputTextView.setText(String.format("%.0f", answer));
-            historyString = historyString + " = " + String.valueOf(String.format("%.0f", answer));
-            inputString = String.format("%.0f", answer);
+            historyString.append(" = ").append(String.valueOf(String.format("%.0f", answer)));
+            inputString.replace(0, inputString.length(), String.format("%.0f", answer));
         }
         else {
             outputTextView.setText("" + answer);
-            historyString = historyString + " = " + String.valueOf(answer);
-            inputString = String.valueOf(answer);
+            historyString.append(" = ").append(String.valueOf(answer));
+            inputString.replace(0, inputString.length(), String.valueOf(answer));
         }
         calculatorState = 2;
-        dbHelper.insertData(historyString);
+        dbHelper.insertData(historyString.toString());
     }
 
 
     private void SolveNoBracketsAlgorithm(){ //my own calculating algorithm. It's no longer used
-        String historyString = inputString;
+        StringBuilder historyString = inputString;
         boolean startAgain = false;
 
         Signs[] sign;
         double[] number;
 
-        String[] stringForEachElement = inputString.split(" ");
+        String[] stringForEachElement = inputString.toString().split(" ");
         sign = new Signs[stringForEachElement.length];
         number = new double[stringForEachElement.length];
         int signIndex = 0;
@@ -441,16 +436,16 @@ class Solver {
         }
         if(number[0]%1 == 0) {
             outputTextView.setText(String.format("%.0f", number[0]));
-            historyString = historyString + " = " + String.valueOf(String.format("%.0f", number[0]));
-            inputString = String.format("%.0f", number[0]);
+            historyString.append(" = ").append(String.valueOf(String.format("%.0f", number[0])));
+            inputString.replace(0, inputString.length(), String.format("%.0f", number[0]));
         }
         else {
             outputTextView.setText(String.valueOf(number[0]));
-            historyString = historyString + " = " + String.valueOf(number[0]);
-            inputString = String.valueOf(number[0]);
+            historyString.append(" = ").append(String.valueOf(number[0]));
+            inputString = inputString.replace(0, inputString.length(),String.valueOf(number[0]));
         }
         calculatorState = 2;
-        dbHelper.insertData(historyString);
+        dbHelper.insertData(historyString.toString());
 
     }
 
@@ -465,8 +460,8 @@ class Solver {
 
 
     private void clearAll(){
-        inputString = "";
-        eachNumberString = "";
+        inputString.setLength(0);
+        eachNumberString.setLength(0);
         outputTextView.setText("");
         calculatorState = 1;
     }
@@ -529,14 +524,14 @@ class Solver {
 
 
 
-    private boolean isFirstCharValid(String characterForZeroFirstCharacterCondition){ // method that makes sure that the first digit in the number isn't 0 and if it is we replace zero with the number we pass in the method argument
+    private boolean isFirstCharValid(char characterForZeroFirstCharacterCondition){ // method that makes sure that the first digit in the number isn't 0 and if it is we replace zero with the number we pass in the method argument
         if(calculatorState == 2){ //check if query was already calculated so we can clear it
             clearAll(); //clear all if the user clicked any number after he got the answer
         }
 
         if(eachNumberString.length() == 1 && eachNumberString.charAt(0) == '0'){ // check if we input zero as the first character
-            eachNumberString = characterForZeroFirstCharacterCondition;
-            inputString = inputString.substring(0, inputString.length()-1) + characterForZeroFirstCharacterCondition; //replace zero with the character we pass
+            eachNumberString.replace(0, eachNumberString.length(), String.valueOf(characterForZeroFirstCharacterCondition));
+            inputString.setCharAt(inputString.length(), characterForZeroFirstCharacterCondition); //replace zero with the character we pass
             calculatorState = 0;
             return false;
         }
@@ -554,42 +549,42 @@ class Solver {
             return;
         }
         if(inputString.length()>0) {
-            if(inputString.contains("NaN"))
-                inputString = "";
+            if(inputString.toString().contains("NaN"))
+                inputString.setLength(0);
             else if (inputString.charAt(inputString.length()-1) == ' '){
-                inputString = inputString.substring(0, inputString.length() - 3); //removing three last characters in the inputString in case the back button was clicked on " + " or " - " or " * " or " / "
-                eachNumberString = getTheLastNumberInString(inputString);
+                inputString.delete(inputString.length() - 3, inputString.length()); //removing three last characters in the inputString in case the back button was clicked on " + " or " - " or " * " or " / "
+                eachNumberString.replace(0, eachNumberString.length(), getTheLastNumberInString(inputString.toString()));
                 calculatorState = 0;
             }
-            else if(inputString.endsWith("arcctan("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("arcctan("));
+            else if(inputString.toString().endsWith("arcctan("))
+                inputString.delete(inputString.lastIndexOf("arcctan("), inputString.length());
 
-            else if(inputString.endsWith("arctan("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("arctan("));
-            else if(inputString.endsWith("arccos("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("arccos("));
-            else if(inputString.endsWith("arcsin("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("arcsin("));
+            else if(inputString.toString().endsWith("arctan("))
+                inputString.delete(inputString.lastIndexOf("arctan("), inputString.length());
+            else if(inputString.toString().endsWith("arccos("))
+                inputString.delete(inputString.lastIndexOf("arccos("), inputString.length());
+            else if(inputString.toString().endsWith("arcsin("))
+                inputString.delete(inputString.lastIndexOf("arcsin("), inputString.length());
 
-            else if(inputString.endsWith("sqrt("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("sqrt("));
-            else if(inputString.endsWith("ctan("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("ctan("));
-            else if(inputString.endsWith("ln("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("ln("));
+            else if(inputString.toString().endsWith("sqrt("))
+                inputString.delete(inputString.lastIndexOf("sqrt("), inputString.length());
+            else if(inputString.toString().endsWith("ctan("))
+                inputString.delete(inputString.lastIndexOf("ctan("), inputString.length());
+            else if(inputString.toString().endsWith("ln("))
+                inputString.delete(inputString.lastIndexOf("ln("), inputString.length());
 
-            else if (inputString.endsWith("sin("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("sin("));
-            else if (inputString.endsWith("cos("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("cos("));
-            else if (inputString.endsWith("tan("))
-                inputString = inputString.substring(0, inputString.lastIndexOf("tan("));
+            else if (inputString.toString().endsWith("sin("))
+                inputString.delete(inputString.lastIndexOf("sin("), inputString.length());
+            else if (inputString.toString().endsWith("cos("))
+                inputString.delete(inputString.lastIndexOf("cos("), inputString.length());
+            else if (inputString.toString().endsWith("tan("))
+                inputString.delete(inputString.lastIndexOf("tan("), inputString.length());
 
             else {
-                inputString = inputString.substring(0, inputString.length() - 1); //removing one digit of a number
-                eachNumberString = getTheLastNumberInString(inputString);
+                inputString.deleteCharAt(inputString.length()); //removing one digit of a number
+                eachNumberString.replace(0, eachNumberString.length(), getTheLastNumberInString(inputString.toString()));
                 if (inputString.charAt(inputString.length() - 1) == ' ') {
-                    eachNumberString = "";
+                    eachNumberString.setLength(0);
                     calculatorState = 1;
                 }
             }
@@ -615,16 +610,16 @@ class Solver {
     }
 
     public void setValuesAfterRotation(String eachNumberString, String inputString, int calculatorState){ //update the value after device was rotated
-        this.eachNumberString = eachNumberString;
-        this.inputString = inputString;
+        this.eachNumberString.replace(0, eachNumberString.length(), eachNumberString);
+        this.inputString.replace(0, inputString.length(), inputString);
         this.calculatorState = calculatorState;
         outputTextView.setText(inputString);
     }
 
     public ArrayList<Object> getValuesBeforeRotation(){
         ArrayList<Object> listOfValues = new ArrayList<>();
-        listOfValues.add(eachNumberString);
-        listOfValues.add(inputString);
+        listOfValues.add(eachNumberString.toString());
+        listOfValues.add(inputString.toString());
         listOfValues.add(calculatorState);
         return listOfValues;
     }
