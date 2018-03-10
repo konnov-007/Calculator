@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,9 +23,10 @@ public class MainActivity extends AppCompatActivity {
             solver.setValuesAfterRotation(savedInstanceState.getString("eachNumberString"),
                     savedInstanceState.getString("inputString"), savedInstanceState.getInt("calculatorState"));
         }
+
     }
 
-    public void onClick(View v){
+    public void onClick(View v){ //if any button was clicked
         solver.button_clicked(v);
     }
 

@@ -23,6 +23,7 @@ class Solver {
     private Activity mainActivity;
     private int calculatorState = 1; // 0 - number clicked, 1 - operation clicked, 2 - query was calculated
     private Toast toast;
+    private static final int SCALE_FOR_BIG_DECIMAL = 100;
 
 
     Solver(Activity activity, HistoryFragment historyFragment, DBHelper dbHelper){ // constructor that gets called from MainActivity
@@ -38,7 +39,7 @@ class Solver {
                 case R.id.button_one:
                     if(isNumberTooLarge()) //check if the number didn't exceeded 18 digits
                         return;
-                    if(isFirstCharValid('1')) {
+                    if(isFirstDigitNotZero('1')) {
                         inputString.append("1");
                         eachNumberString.append("1");
                         calculatorState = 0;
@@ -48,7 +49,7 @@ class Solver {
                 case R.id.button_two:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('2')) {
+                    if(isFirstDigitNotZero('2')) {
                         inputString.append("2");
                         eachNumberString.append("2");
                         calculatorState = 0;
@@ -58,7 +59,7 @@ class Solver {
                 case R.id.button_three:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('3')) {
+                    if(isFirstDigitNotZero('3')) {
                         inputString.append("3");
                         eachNumberString.append("3");
                         calculatorState = 0;
@@ -68,7 +69,7 @@ class Solver {
                 case R.id.button_four:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('4')) {
+                    if(isFirstDigitNotZero('4')) {
                         inputString.append("4");
                         eachNumberString.append("4");
                         calculatorState = 0;
@@ -78,7 +79,7 @@ class Solver {
                 case R.id.button_five:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('5')) {
+                    if(isFirstDigitNotZero('5')) {
                         inputString.append("5");
                         eachNumberString.append("5");
                         calculatorState = 0;
@@ -88,7 +89,7 @@ class Solver {
                 case R.id.button_six:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('6')) {
+                    if(isFirstDigitNotZero('6')) {
                         inputString.append("6");
                         eachNumberString.append("6");
                         calculatorState = 0;
@@ -98,7 +99,7 @@ class Solver {
                 case R.id.button_seven:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('7')) {
+                    if(isFirstDigitNotZero('7')) {
                         inputString.append("7");
                         eachNumberString.append("7");
                         calculatorState = 0;
@@ -108,7 +109,7 @@ class Solver {
                 case R.id.button_eight:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('8')) {
+                    if(isFirstDigitNotZero('8')) {
                         inputString.append("8");
                         eachNumberString.append("8");
                         calculatorState = 0;
@@ -118,7 +119,7 @@ class Solver {
                 case R.id.button_nine:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('9')) {
+                    if(isFirstDigitNotZero('9')) {
                         inputString.append("9");
                         eachNumberString.append("9");
                         calculatorState = 0;
@@ -128,7 +129,7 @@ class Solver {
                 case R.id.button_zero:
                     if(isNumberTooLarge())
                         return;
-                    if(isFirstCharValid('0')) {
+                    if(isFirstDigitNotZero('0')) {
                         inputString.append("0");
                         eachNumberString.append("0");
                         calculatorState = 0;
@@ -194,80 +195,129 @@ class Solver {
                     }
                     break;
                 case R.id.button_pi:
-                    if(inputString.toString().endsWith("."))
-                        inputString.append("0 * ");
-                    outputString();
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
-                    inputString.append("3.14159265359");
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                            inputString.append(" * ");
+                    inputString.append(Math.PI);
                     outputString();
                     calculatorState = 0;
                     break;
                 case R.id.button_ln:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("ln(");
                     outputString();
                     break;
                 case R.id.button_pow:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 0){
                         inputString.append("^");
                         outputString();
                     }
                     break;
                 case R.id.button_sqrt:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("sqrt(");
                     outputString();
                     break;
                 case R.id.button_factorial:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     inputString.append("!");
                     outputString();
                     break;
                 case R.id.button_sin:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("sin(");
                     outputString();
                     break;
                 case R.id.button_cos:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("cos(");
                     outputString();
                     break;
                 case R.id.button_tan:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("tan(");
                     outputString();
                     break;
                 case R.id.button_ctan:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("ctan(");
                     outputString();
                     break;
                 case R.id.button_arcsin:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("arcsin(");
                     outputString();
                     break;
                 case R.id.button_arccos:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("arccos(");
                     outputString();
                     break;
                 case R.id.button_arctan:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("arctan(");
                     outputString();
                     break;
                 case R.id.button_arcctan:
+                    if(inputString.toString().endsWith("."))
+                        inputString.append("0 * ");
+                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
+                        inputString.append(" * ");
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
                     inputString.append("arcctan(");
@@ -284,7 +334,9 @@ class Solver {
                 case R.id.button_bracket_right:
                     if(calculatorState == 2)
                         eachNumberString.setLength(0);
-                    inputString.append(")");
+                    if(inputString.charAt(inputString.length() - 2) != '+' && inputString.charAt(inputString.length() - 2) != '-' &&
+                            inputString.charAt(inputString.length() - 2) != '*' && inputString.charAt(inputString.length() - 2) != '/') // making sure the user won't put right bracket just after the operation
+                        inputString.append(")");
                     outputString();
                     calculatorState = 0;
                     break;
@@ -314,9 +366,9 @@ class Solver {
         inputString.replace(0, inputString.length(), inputString.toString().replaceAll("\\.[^1-9]", ".0"));// ensuring there isn't gonna be a number ending with dot with no number after it       if(!inputString.contains("("))
         //if(inputString.toString().matches("[.*()^!]"))
         if(inputString.indexOf("(") != -1 || inputString.indexOf("^") != -1 || inputString.indexOf("!") != -1)
-            SolveAdvancedAlgorithm(); //if the query contains complicated stuff we solve it via math parser library
+            SolveAdvancedAlgorithm(); //if the query contains complicated stuff we solve it via math parser library with doubles
         else
-            SolveMySimpleAlgorithm(); //otherwise we use my own algorithm
+            SolveMySimpleAlgorithm(); //otherwise we use my own algorithm with BigDecimal
 
     }
 
@@ -339,6 +391,7 @@ class Solver {
         calculatorState = 2;
         dbHelper.insertData(historyString.toString());
     }
+
 
 
     private void SolveMySimpleAlgorithm(){ //my own calculating algorithm with BigDecimal.
@@ -371,7 +424,7 @@ class Solver {
                     signIndex++;
                     break;
                 default:
-                    number[numberIndex] = new BigDecimal(element).setScale(20, RoundingMode.HALF_UP);
+                    number[numberIndex] = new BigDecimal(element).setScale(SCALE_FOR_BIG_DECIMAL, RoundingMode.HALF_UP);
                     numberIndex++;
                     break;
             }
@@ -438,8 +491,8 @@ class Solver {
                 startAgain = true;
             }
         }
-        historyString.append(" = ").append(beautifulOutput(number[0].toString()));
-        inputString = inputString.replace(0, inputString.length(), beautifulOutput(number[0].toString()));
+        historyString.append(" = ").append(beautifulOutput(number[0].toPlainString()));
+        inputString = inputString.replace(0, inputString.length(), beautifulOutput(number[0].toPlainString()));
         outputString();
 
         calculatorState = 2;
@@ -522,14 +575,17 @@ class Solver {
 
 
 
-    private boolean isFirstCharValid(char characterForZeroFirstCharacterCondition){ // method that makes sure that the first digit in the number isn't 0 and if it is we replace zero with the number we pass in the method argument
+    private boolean isFirstDigitNotZero(char characterForZeroFirstCharacterCondition){ // method that makes sure that the first digit in the number isn't 0 and if it is we replace zero with the number we pass in the method argument
         if(calculatorState == 2){ //check if query was already calculated so we can clear it
             clearAll(); //clear all if the user clicked any number after he got the answer
         }
 
+        if(inputString.length() != 0 && inputString.charAt(inputString.length()-1) == ')')
+            inputString.append(" * ");
+
         if(eachNumberString.length() == 1 && eachNumberString.charAt(0) == '0'){ // check if we input zero as the first character
             eachNumberString.replace(0, eachNumberString.length(), String.valueOf(characterForZeroFirstCharacterCondition));
-            inputString.setCharAt(inputString.length(), characterForZeroFirstCharacterCondition); //replace zero with the character we pass
+            inputString.setCharAt(inputString.length()-1, characterForZeroFirstCharacterCondition); //replace zero with the character we pass
             calculatorState = 0;
             return false;
         }
