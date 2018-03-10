@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 
@@ -23,14 +25,14 @@ class Solver {
     private Toast toast;
 
 
-    Solver(Activity activity, HistoryFragment historyFragment, DBHelper dbHelper){
+    Solver(Activity activity, HistoryFragment historyFragment, DBHelper dbHelper){ // constructor that gets called from MainActivity
         this.historyFragment = historyFragment;
         this.dbHelper = dbHelper;
         mainActivity = activity;
         outputTextView = (TextView) activity.findViewById(R.id.output);
     }
 
-    void button_clicked(View v){
+    void button_clicked(View v){ //gets called whenever the user clicks any button
         try {
             switch (v.getId()) {
                 case R.id.button_one:
@@ -143,7 +145,7 @@ class Solver {
                     }
                     break;
                 case R.id.button_plus:
-                    if(inputString.toString().endsWith("."))
+                    if(inputString.toString().endsWith(".")) //checking if there is no number after dot if it is the case then we put zero
                         inputString.append("0");
                     outputString();
                     if(calculatorState == 0 || calculatorState == 2) {
@@ -308,15 +310,18 @@ class Solver {
 
 
 
-    private void solve() {
+    private void solve() { //gets called whenever equals button clicked
         inputString.replace(0, inputString.length(), inputString.toString().replaceAll("\\.[^1-9]", ".0"));// ensuring there isn't gonna be a number ending with dot with no number after it       if(!inputString.contains("("))
-//            SolveNoBracketsAlgorithm();
-//        else
-          SolveAlgorithnWithBrackets();
+        //if(inputString.toString().matches("[.*()^!]"))
+        if(inputString.indexOf("(") != -1 || inputString.indexOf("^") != -1 || inputString.indexOf("!") != -1)
+            SolveAdvancedAlgorithm(); //if the query contains complicated stuff we solve it via math parser library
+        else
+            SolveMySimpleAlgorithm(); //otherwise we use my own algorithm
+
     }
 
 
-    private void SolveAlgorithnWithBrackets() { //solving via math parser library
+    private void SolveAdvancedAlgorithm() { //solving via math parser library
         //inputString = "(22 - 6) / (2 - 10 + 50) * (50 * sin(90) - (3^5 + sqrt(81)) - ln(16) + 9^9) + 8!";
         StringBuilder historyString = new StringBuilder(inputString.toString());
         Expression expression = new Expression(inputString.toString());
@@ -336,16 +341,15 @@ class Solver {
     }
 
 
-    private void SolveNoBracketsAlgorithm(){ //my own calculating algorithm. It's no longer used
-        StringBuilder historyString = inputString;
+    private void SolveMySimpleAlgorithm(){ //my own calculating algorithm with BigDecimal.
+        StringBuilder historyString = new StringBuilder(inputString.toString());
         boolean startAgain = false;
 
         Signs[] sign;
-        double[] number;
-
+        BigDecimal[] number;
         String[] stringForEachElement = inputString.toString().split(" ");
         sign = new Signs[stringForEachElement.length];
-        number = new double[stringForEachElement.length];
+        number = new BigDecimal[stringForEachElement.length];
         int signIndex = 0;
         int numberIndex = 0;
         for (String element : stringForEachElement) {
@@ -367,7 +371,7 @@ class Solver {
                     signIndex++;
                     break;
                 default:
-                    number[numberIndex] = Double.parseDouble(element);
+                    number[numberIndex] = new BigDecimal(element).setScale(20, RoundingMode.HALF_UP);
                     numberIndex++;
                     break;
             }
@@ -381,7 +385,7 @@ class Solver {
                 startAgain = false;
             }
             if(sign[i] == Signs.DIVIDE) {
-                number[i] = number[i] / number[i+1];
+                number[i] = number[i].divide(number[i+1], RoundingMode.HALF_UP);
                 for(int j = i; j<numberOfOperations; j++) {
                     if(j+2 <= numberOfOperations) {
                         sign[j] = sign[j + 1];
@@ -392,7 +396,7 @@ class Solver {
                 startAgain = true;
             }
             else if (sign[i] == Signs.MULTIPLY) {
-                number[i] = number[i] * number[i+1];
+                number[i] = number[i].multiply(number[i+1]);
                 for(int j = i; j<numberOfOperations; j++) {
                     if(j+2 <= numberOfOperations) {
                         sign[j] = sign[j + 1];
@@ -411,7 +415,7 @@ class Solver {
                 startAgain = false;
             }
             if(sign[i] == Signs.MINUS) {
-                number[i] = number[i] - number[i+1];
+                number[i] = number[i].subtract(number[i+1]);
                 for(int j = i; j<numberOfOperations; j++) {
                     if(j+2 <= numberOfOperations) {
                         sign[j] = sign[j + 1];
@@ -422,7 +426,7 @@ class Solver {
                 startAgain = true;
             }
             else if(sign[i] == Signs.PLUS) {
-                number[i] = number[i] + number[i+1];
+                number[i] = number[i].add(number[i+1]);
 
                 for(int j = i; j<numberOfOperations; j++) {
                     if(j+2 <= numberOfOperations) {
@@ -434,16 +438,10 @@ class Solver {
                 startAgain = true;
             }
         }
-        if(number[0]%1 == 0) {
-            outputTextView.setText(String.format("%.0f", number[0]));
-            historyString.append(" = ").append(String.valueOf(String.format("%.0f", number[0])));
-            inputString.replace(0, inputString.length(), String.format("%.0f", number[0]));
-        }
-        else {
-            outputTextView.setText(String.valueOf(number[0]));
-            historyString.append(" = ").append(String.valueOf(number[0]));
-            inputString = inputString.replace(0, inputString.length(),String.valueOf(number[0]));
-        }
+        historyString.append(" = ").append(beautifulOutput(number[0].toString()));
+        inputString = inputString.replace(0, inputString.length(), beautifulOutput(number[0].toString()));
+        outputString();
+
         calculatorState = 2;
         dbHelper.insertData(historyString.toString());
 
@@ -469,7 +467,7 @@ class Solver {
 
 
 
-    private void disableButtons(){
+    private void disableButtons(){ //disabling buttons for showing history fragment
         Button buttonone = (Button) mainActivity.findViewById(R.id.button_one);
         Button buttontwo = (Button) mainActivity.findViewById(R.id.button_two);
         Button buttonthree = (Button) mainActivity.findViewById(R.id.button_three);
@@ -542,7 +540,7 @@ class Solver {
 
 
 
-    private void buttonBackClicked(){
+    private void buttonBackClicked(){ // algorithm of deleting last operation/digit whenever delete button aka back button got clicked
         if(inputString.length() == 1 || (inputString.length() == 2 && inputString.charAt(0) =='-')) {
             clearAll();
             outputString();
@@ -581,7 +579,7 @@ class Solver {
                 inputString.delete(inputString.lastIndexOf("tan("), inputString.length());
 
             else {
-                inputString.deleteCharAt(inputString.length()); //removing one digit of a number
+                inputString.deleteCharAt(inputString.length()-1); //removing one digit of a number
                 eachNumberString.replace(0, eachNumberString.length(), getTheLastNumberInString(inputString.toString()));
                 if (inputString.charAt(inputString.length() - 1) == ' ') {
                     eachNumberString.setLength(0);
@@ -592,14 +590,17 @@ class Solver {
         outputString();
     }
 
-    private String getTheLastNumberInString(String str){
+    private String getTheLastNumberInString(String str){ // searches what was the last NUMBER (not digit) in a string
         String number[] = str.split(" ");
         return number[number.length-1];
     }
 
 
-    private boolean isNumberTooLarge(){
-        if(eachNumberString.length()>=18){
+    private boolean isNumberTooLarge(){ //checking if the input number was too large
+        if(inputString.indexOf("(") == -1 && inputString.indexOf("^") == -1 && inputString.indexOf("!") == -1) // if we're working with bigdecimal there is no limit
+            return false;
+
+        if(eachNumberString.length()>=15){
             if(toast != null)
                 toast.cancel();
             toast = Toast.makeText(mainActivity, R.string.number_too_large_warning, Toast.LENGTH_SHORT);
@@ -616,12 +617,26 @@ class Solver {
         outputTextView.setText(inputString);
     }
 
-    public ArrayList<Object> getValuesBeforeRotation(){
+    public ArrayList<Object> getValuesBeforeRotation(){ //save values prior to rotation
         ArrayList<Object> listOfValues = new ArrayList<>();
         listOfValues.add(eachNumberString.toString());
         listOfValues.add(inputString.toString());
         listOfValues.add(calculatorState);
         return listOfValues;
+    }
+
+    private String beautifulOutput(String string){ //for outputing BigDecimal numbers without spare 0s
+        while (true){
+            if(string.charAt(string.length() - 1) == '0' && string.contains(".")){
+                if(string.indexOf(".0") == string.length() - 2)
+                    string = string.substring(0, string.length() - 2);
+                else
+                    string = string.substring(0, string.length() - 1);
+            }
+            else
+                break;
+        }
+        return string;
     }
 
 }

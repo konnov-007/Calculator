@@ -39,7 +39,7 @@
     //fragment_history.xml//
     <string name="clear">clear</string>
     //Solvator.java//
-    <string name="number_too_large_warning">The number can\'t exceed 18 digits</string>
+    <string name="number_too_large_warning">The number can\'t exceed 15 digits in advanced mode</string>
     //menu_main.xml
     <string name="converter">Converter</string>
 
