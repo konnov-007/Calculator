@@ -6,7 +6,7 @@
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="0dp"
     android:background="@color/blue"
     tools:context="konnov.commr.vk.calculator.MainActivity">
 
@@ -285,7 +285,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="216dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true">
@@ -296,6 +296,7 @@
             android:gravity="end"
             android:orientation="vertical" >
         <TextView
+            android:layout_marginTop="10dp"
             android:id="@+id/output"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

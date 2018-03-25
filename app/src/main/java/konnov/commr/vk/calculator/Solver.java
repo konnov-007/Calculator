@@ -216,10 +216,6 @@ class Solver {
                     outputString();
                     break;
                 case R.id.button_pow:
-                    if(inputString.toString().endsWith("."))
-                        inputString.append("0 * ");
-                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
-                        inputString.append(" * ");
                     if(calculatorState == 0){
                         inputString.append("^");
                         outputString();
@@ -236,11 +232,9 @@ class Solver {
                     outputString();
                     break;
                 case R.id.button_factorial:
-                    if(inputString.toString().endsWith("."))
-                        inputString.append("0 * ");
-                    if(inputString.length() != 0 && inputString.substring(inputString.length()-1).matches("[1-9)]"))
-                        inputString.append(" * ");
-                    inputString.append("!");
+                    if(calculatorState == 0) {
+                        inputString.append("!");
+                    }
                     outputString();
                     break;
                 case R.id.button_sin:
@@ -697,78 +691,5 @@ class Solver {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    private void SolveAlgorithnWithBrackets() {
-//        System.out.println("private void SolveAlgorithnWithBrackets() {");
-//        System.out.println("THE STRING IS " + inputString);
-//        String historyString = inputString;
-//        // create a script engine manager
-//        ScriptEngineManager factory = new ScriptEngineManager();
-//        // create a JavaScript engine
-//        ScriptEngine engine = factory.getEngineByName("JavaScript");
-//        inputString = inputString.replaceAll("sin", "Math.sin").
-//                replaceAll("cos", "Math.cos").
-//                replaceAll("tan", "Math.tan").
-//                replaceAll("sqrt", "Math.sqrt").
-//                replaceAll("pow", "Math.pow").
-//                replaceAll("log", "Math.log");
-//        Integer integerAnswer = null;
-//        Double doubleAnswer = null;
-//
-//        try {
-//            Object answer = engine.eval(inputString);
-//            if (answer instanceof Integer)
-//                integerAnswer = (Integer) answer;
-//            if (answer instanceof Double)
-//                doubleAnswer = (Double) answer;
-//        } catch (ScriptException e) {
-//            e.printStackTrace();
-//        }
-//        if (integerAnswer != null) {
-//            outputTextView.setText(integerAnswer);
-//            historyString = historyString + " = " + String.valueOf(integerAnswer);
-//            inputString = String.valueOf(integerAnswer);
-//        }
-//        if(doubleAnswer != null) {
-//            outputTextView.setText(String.valueOf(doubleAnswer));
-//            historyString = historyString + " = " + String.valueOf(doubleAnswer);
-//            inputString = String.valueOf(doubleAnswer);
-//        }
-//        calculatorState = 2;
-//        dbHelper.insertData(historyString);
-//
-//    }
 
 
